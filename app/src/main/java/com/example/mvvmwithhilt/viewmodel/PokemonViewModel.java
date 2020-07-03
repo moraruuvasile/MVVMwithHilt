@@ -3,6 +3,7 @@ package com.example.mvvmwithhilt.viewmodel;
 import android.util.Log;
 
 import androidx.hilt.lifecycle.ViewModelInject;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -11,6 +12,7 @@ import com.example.mvvmwithhilt.model.PokemonResponse;
 import com.example.mvvmwithhilt.repository.Repository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.functions.Function;
@@ -21,10 +23,12 @@ public class PokemonViewModel extends ViewModel {
 
     private Repository repository;
     private MutableLiveData<ArrayList<Pokemon>> pokemonList = new MutableLiveData<>();
+    private LiveData<List<Pokemon>> favoritePokemonList = null;
 
     @ViewModelInject
     public PokemonViewModel(Repository repository) {
         this.repository = repository;
+        favoritePokemonList = repository.getFavoritePokemon();
     }
 
     public MutableLiveData<ArrayList<Pokemon>> getPokemonList() {
@@ -51,4 +55,22 @@ public class PokemonViewModel extends ViewModel {
                 .subscribe(result -> pokemonList.setValue(result),
                         error-> Log.e(TAG, "getPokemons: " + error.getMessage() ));
     }
+
+    public void insertPokemon(Pokemon pokemon){
+        repository.insertPokemon(pokemon);
+    }
+    public void deletePokemon(String pokemonName){
+        repository.deletePokemon(pokemonName);
+    }
+
+    public LiveData<List<Pokemon>> getFavoritePokemonList() {
+        return favoritePokemonList;
+    }
+
+    public void getFavoritePokemon(){
+        favoritePokemonList = repository.getFavoritePokemon();
+    }
+
+
+
 }

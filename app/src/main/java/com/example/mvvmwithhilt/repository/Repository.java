@@ -1,7 +1,13 @@
 package com.example.mvvmwithhilt.repository;
 
+import androidx.lifecycle.LiveData;
+
+import com.example.mvvmwithhilt.db.PokeDao;
+import com.example.mvvmwithhilt.model.Pokemon;
 import com.example.mvvmwithhilt.model.PokemonResponse;
 import com.example.mvvmwithhilt.network.PokeApiService;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -20,8 +26,23 @@ public class Repository {
     }
 
 
-    public Observable<PokemonResponse> getPokemons() {
+    public Observable<PokemonResponse> getPokemons(){
         return apiService.getPokemons();
     }
-}
 
+    public void insertPokemon(Pokemon pokemon){
+        pokeDao.insertPokemon(pokemon);
+    }
+
+    public void deletePokemon(String pokemonName){
+        pokeDao.deletePokemon(pokemonName);
+    }
+
+    public void deleteAll(){
+        pokeDao.deleteAll();
+    }
+
+    public LiveData<List<Pokemon>> getFavoritePokemon(){
+        return pokeDao.getFavoritePokemons();
+    }
+}
